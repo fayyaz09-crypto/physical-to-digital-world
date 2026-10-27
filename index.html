@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physical to Digital World — Crypto Scanner</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10233a;--line:#1d3855;--text:#edf6ff;--muted:#8ea7c2;--cyan:#00d9ff;--blue:#287bff;--green:#24d18a;--red:#ff6378}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102b49 0%,var(--bg) 55%);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:18px clamp(16px,4vw,52px);border-bottom:1px solid #19314b;background:#07111fe8;position:sticky;top:0;z-index:3;backdrop-filter:blur(12px)}
+.logo{width:54px;height:54px;object-fit:cover;border-radius:50%;border:1px solid #00d9ff66}.brand{font-size:clamp(17px,2.5vw,24px);font-weight:800;letter-spacing:-.5px}.brand span{color:var(--cyan)}.sub{color:var(--muted);font-size:12px;letter-spacing:1.5px}
+main{max-width:1250px;margin:auto;padding:28px 18px 60px}.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px;flex-wrap:wrap}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}h1{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:8px 0}.muted{color:var(--muted)}.status{border:1px solid #23654e;background:#0b2b26;color:#7df0bd;border-radius:999px;padding:8px 12px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}.stat,.card{background:linear-gradient(145deg,#10233a,#0b1829);border:1px solid var(--line);border-radius:16px}.stat{padding:17px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:25px;margin-top:5px}.card{padding:20px;margin-top:16px}.card h2{font-size:18px;margin:0 0 5px}.cardhead{display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap;margin-bottom:16px}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.field select,.field input{width:100%;background:#071523;border:1px solid #2a4968;color:var(--text);border-radius:9px;padding:11px;font:inherit;min-width:0}
+.checks{display:flex;gap:14px;flex-wrap:wrap;margin:15px 0}.checks label{display:flex;align-items:center;gap:7px;color:#c6d6e7;font-size:13px}
+button{border:0;border-radius:10px;padding:12px 17px;background:linear-gradient(100deg,#00b9e9,#287bff);color:white;font-weight:800;cursor:pointer}button.secondary{background:#172c43;border:1px solid #2a4968}button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.hint{font-size:12px;color:var(--muted);margin-top:10px}
+.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:12px 13px;border-bottom:1px solid #1b3148}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}td{font-size:13px}.coin{font-weight:800}.pill{border-radius:6px;padding:4px 7px;font-size:11px;font-weight:800}.up{color:var(--green);background:#10362f}.down{color:var(--red);background:#3a202b}.neutral{color:#b7c9dd;background:#1a2c40}.empty{text-align:center;padding:28px;color:var(--muted)}.footer{font-size:12px;color:var(--muted);margin-top:20px}.note{border-left:3px solid var(--cyan);padding:10px 13px;background:#0c2032;color:#b9cee3;border-radius:0 8px 8px 0;font-size:13px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){header{padding:12px}.logo{width:44px;height:44px}.controls{grid-template-columns:1fr 1fr}.card{padding:14px}.grid{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="logo.png" alt="Physical to Digital World logo" onerror="this.style.display='none'">
+  <div><div class="brand">Physical to <span>Digital World</span></div><div class="sub">CRYPTO INDICATOR SCANNER</div></div>
+</header>
+<main>
+  <section class="hero">
+    <div><div class="eyebrow">Your market workspace</div><h1>Scan smarter. Find your setup.</h1><div class="muted">Filter crypto markets using RSI, EMA and volume conditions.</div></div>
+    <div class="status" id="status">● Ready to scan</div>
+  </section>
+  <div class="grid">
+    <div class="stat"><small>Coins checked</small><strong id="checked">—</strong></div>
+    <div class="stat"><small>Matching setups</small><strong id="matches">—</strong></div>
+    <div class="stat"><small>Market</small><strong style="font-size:19px">Binance Spot</strong></div>
+    <div class="stat"><small>Data source</small><strong style="font-size:19px">Public API</strong></div>
+  </div>
+  <section class="card">
+    <div class="cardhead"><div><h2>Scanner settings</h2><div class="muted">Choose your conditions, then run the scan.</div></div><span class="pill neutral">No account / API key needed</span></div>
+    <div class="controls">
+      <div class="field"><label for="tf">Timeframe</label><select id="tf"><option value="5m">5 minutes</option><option value="15m" selected>15 minutes</option><option value="1h">1 hour</option><option value="4h">4 hours</option><option value="1d">1 day</option></select></div>
+      <div class="field"><label for="limit">Coins to scan</label><select id="limit"><option value="50">Top 50 by quote volume</option><option value="100" selected>Top 100 by quote volume</option><option value="200">Top 200 by quote volume</option></select></div>
+      <div class="field"><label for="rsiMax">RSI condition (14)</label><select id="rsiMax"><option value="30">Oversold: RSI ≤ 30</option><option value="40">RSI ≤ 40</option><option value="50" selected>RSI ≤ 50</option><option value="70">RSI ≤ 70</option><option value="101">Any RSI</option></select></div>
+      <div class="field"><label for="ema">EMA condition</label><select id="ema"><option value="above">Price above EMA 20</option><option value="below">Price below EMA 20</option><option value="crossUp">Crossed above EMA 20 (last candle)</option><option value="any" selected>Any / don't filter</option></select></div>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="volFilter"> Volume above previous 20-candle average</label>
+      <label><input type="checkbox" id="greenOnly"> Green candle only</label>
+    </div>
+    <div class="actions"><button id="scanBtn" onclick="scan()">▶ Scan coins</button><button class="secondary" onclick="clearFilters()">Reset filters</button><span class="muted" id="updated" style="font-size:12px"></span></div>
+    <div class="hint">This first version scans Binance USDT spot pairs. The API is public; availability may vary by region/network.</div>
+  </section>
+  <section class="card">
+    <div class="cardhead"><div><h2>Scan results</h2><div class="muted" id="resultText">Run a scan to see matching coins.</div></div><button class="secondary" onclick="downloadCSV()">Export CSV</button></div>
+    <div class="tablewrap"><table><thead><tr><th>Coin</th><th>Price (USDT)</th><th>24h change</th><th>RSI 14</th><th>EMA 20</th><th>Candle move</th><th>Volume</th><th>Signal</th></tr></thead><tbody id="results"><tr><td colspan="8" class="empty">No scan results yet. Click “Scan coins”.</td></tr></tbody></table></div>
+    <div class="footer">RSI is calculated from closed candles. Prices and volume come from public market data. Results are educational filters, not guaranteed trading signals.</div>
+  </section>
+  <section class="card">
+    <h2>How to use</h2>
+    <p class="muted">1. Pick a timeframe. 2. Select RSI and EMA rules. 3. Optionally enable volume confirmation. 4. Click <b>Scan coins</b>. 5. Click a coin symbol to open its Binance chart.</p>
+    <div class="note">Next upgrade: add custom indicator rules, saved scan presets, and alerts. Custom TradingView Pine Script cannot be executed directly by a normal webpage; its logic needs to be rebuilt or connected through an appropriate supported integration.</div>
+  </section>
+</main>
+<script>
+const API='https://api.binance.com';
+let lastRows=[];
+const $=id=>document.getElementById(id);
+function fmtPrice(n){if(!Number.isFinite(n))return '—';return n>=1000?n.toLocaleString(undefined,{maximumFractionDigits:2}):n>=1?n.toFixed(4):n.toPrecision(5)}
+function fmtVol(n){if(!Number.isFinite(n))return '—';if(n>=1e9)return (n/1e9).toFixed(2)+'B';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(2)+'K';return n.toFixed(2)}
+function rsi(values,period=14){if(values.length<=period)return NaN;let gains=0,losses=0;for(let i=1;i<=period;i++){let d=values[i]-values[i-1];if(d>0)gains+=d;else losses-=d}let ag=gains/period,al=losses/period;for(let i=period+1;i<values.length;i++){let d=values[i]-values[i-1];ag=(ag*(period-1)+Math.max(d,0))/period;al=(al*(period-1)+Math.max(-d,0))/period}if(al===0)return 100;return 100-(100/(1+ag/al))}
+function ema(values,period=20){if(values.length<period)return NaN;let e=values.slice(0,period).reduce((a,b)=>a+b,0)/period;let k=2/(period+1);for(let i=period;i<values.length;i++)e=values[i]*k+e*(1-k);return e}
+async function getJSON(url){const r=await fetch(url);if(!r.ok)throw new Error('API request failed ('+r.status+'). Try again or check network access.');return r.json()}
+async function scan(){
+ const btn=$('scanBtn');btn.disabled=true;$('status').textContent='● Scanning…';$('resultText').textContent='Loading market data…';$('results').innerHTML='<tr><td colspan="8" class="empty">Scanning market data, please wait…</td></tr>';
+ try{
+  const [tickers,exchange]=await Promise.all([getJSON(API+'/api/v3/ticker/24hr'),getJSON(API+'/api/v3/exchangeInfo')]);
+  const valid=new Set(exchange.symbols.filter(s=>s.status==='TRADING'&&s.quoteAsset==='USDT'&&s.isSpotTradingAllowed).map(s=>s.symbol));
+  const limit=Number($('limit').value);
+  const pairs=tickers.filter(t=>valid.has(t.symbol)&&!t.symbol.endsWith('UPUSDT')&&!t.symbol.endsWith('DOWNUSDT')&&!t.symbol.endsWith('BULLUSDT')&&!t.symbol.endsWith('BEARUSDT')).sort((a,b)=>Number(b.quoteVolume)-Number(a.quoteVolume)).slice(0,limit);
+  const tf=$('tf').value, maxRsi=Number($('rsiMax').value), emaMode=$('ema').value, volFilter=$('volFilter').checked, greenOnly=$('greenOnly').checked;
+  let rows=[],done=0;
+  // Process in small batches to avoid flooding the public API.
+  for(let i=0;i<pairs.length;i+=8){
+   const batch=pairs.slice(i,i+8);
+   const results=await Promise.allSettled(batch.map(async t=>{
+    const k=await getJSON(API+'/api/v3/klines?symbol='+t.symbol+'&interval='+tf+'&limit=80');
+    const candles=k.slice(0,-1); // use closed candles for stable indicator values
+    if(candles.length<25) return null;
+    const closes=candles.map(x=>Number(x[4])),opens=candles.map(x=>Number(x[1])),vols=candles.map(x=>Number(x[5]));
+    const last=candles.length-1, price=closes[last], prev=closes[last-1], currentEma=ema(closes.slice(-40),20), priorEma=ema(closes.slice(-41,-1),20), currentRsi=rsi(closes.slice(-40),14), candlePct=(price-opens[last])/opens[last]*100;
+    const avgVol=vols.slice(-21,-1).reduce((a,b)=>a+b,0)/20, volume=vols[last];
+    if(!Number.isFinite(currentEma)||!Number.isFinite(currentRsi))return null;
+    if(currentRsi>maxRsi)return null;
+    if(emaMode==='above'&&price<=currentEma)return null;
+    if(emaMode==='below'&&price>=currentEma)return null;
+    if(emaMode==='crossUp'&&!(prev<=priorEma&&price>currentEma))return null;
+    if(volFilter&&volume<=avgVol)return null;
+    if(greenOnly&&candlePct<=0)return null;
+    return {symbol:t.symbol,price:Number(t.lastPrice),change:Number(t.priceChangePercent),rsi:currentRsi,ema:currentEma,candlePct,volume,signal:price>currentEma?'Above EMA':price<currentEma?'Below EMA':'At EMA',quoteVol:Number(t.quoteVolume)};
+   }));
+   for(const x of results)if(x.status==='fulfilled'&&x.value)rows.push(x.value);
+   done+=batch.length;$('status').textContent='● Scanning '+done+'/'+pairs.length;
+  }
+  rows.sort((a,b)=>a.rsi-b.rsi);lastRows=rows;
+  $('checked').textContent=pairs.length;$('matches').textContent=rows.length;$('updated').textContent='Updated '+new Date().toLocaleTimeString();$('resultText').textContent='Found '+rows.length+' matching coins from the top '+pairs.length+' USDT spot pairs.';
+  if(!rows.length){$('results').innerHTML='<tr><td colspan="8" class="empty">No coins matched these filters. Try relaxing RSI or EMA conditions.</td></tr>'}
+  else $('results').innerHTML=rows.map(r=>`<tr><td class="coin"><a style="color:var(--cyan);text-decoration:none" target="_blank" rel="noopener" href="https://www.binance.com/en/trade/${r.symbol.replace('USDT','_USDT')}">${r.symbol.replace('USDT','')}</a><span class="muted"> / USDT</span></td><td>${fmtPrice(r.price)}</td><td><span class="pill ${r.change>=0?'up':'down'}">${r.change>=0?'+':''}${r.change.toFixed(2)}%</span></td><td>${r.rsi.toFixed(2)}</td><td>${fmtPrice(r.ema)}</td><td><span class="pill ${r.candlePct>=0?'up':'down'}">${r.candlePct>=0?'+':''}${r.candlePct.toFixed(2)}%</span></td><td>${fmtVol(r.volume)}</td><td><span class="pill ${r.signal==='Above EMA'?'up':r.signal==='Below EMA'?'down':'neutral'}">${r.signal}</span></td></tr>`).join('');
+  $('status').textContent='● Scan complete';
+ }catch(e){$('status').textContent='● Scan failed';$('resultText').textContent=e.message;$('results').innerHTML='<tr><td colspan="8" class="empty">'+e.message+' If the browser blocks the API, try opening the page through a simple local web server or host it on a free static site.</td></tr>'}
+ finally{btn.disabled=false}
+}
+function clearFilters(){$('tf').value='15m';$('limit').value='100';$('rsiMax').value='50';$('ema').value='any';$('volFilter').checked=false;$('greenOnly').checked=false}
+function downloadCSV(){if(!lastRows.length){alert('Run a scan first.');return}const cols=['symbol','price','change','rsi','ema','candlePct','volume','signal','quoteVol'];const csv=[cols.join(','),...lastRows.map(r=>cols.map(c=>r[c]).join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='physical-to-digital-world-scan.csv';a.click();URL.revokeObjectURL(a.href)}
+</script>
+</body>
+</html>
