@@ -2,129 +2,130 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Physical to Digital World — Simple Scanner</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physical to Digital World — Crypto Scanner</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1220;--panel:#121d30;--line:#263750;--text:#edf4ff;--muted:#9aabc2;--green:#35d39a;--blue:#3984ff}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Arial,system-ui,sans-serif}
-header{padding:20px 24px;border-bottom:1px solid var(--line);background:#0e192a}
-header h1{margin:0;font-size:clamp(20px,4vw,28px)}
-header h1 span{color:var(--green)}
-header p{margin:5px 0 0;color:var(--muted);font-size:13px}
-main{max-width:1100px;margin:auto;padding:24px 16px 48px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
-.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-h2{font-size:18px;margin:0 0 4px}
-.muted{color:var(--muted);font-size:13px}
-button{border:0;border-radius:9px;padding:12px 18px;background:var(--blue);color:white;font-weight:700;font-size:14px;cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}
-.status{margin-top:12px;color:var(--muted);font-size:13px;min-height:20px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.stat{padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
-.stat small{display:block;color:var(--muted)}
-.stat strong{display:block;font-size:23px;margin-top:4px}
-.tablewrap{overflow-x:auto;margin-top:12px}
-table{width:100%;border-collapse:collapse;white-space:nowrap}
-th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
-th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
-td{font-size:13px}
-.coin{font-weight:700;color:#8edcff}
-.up{color:var(--green)}.down{color:#ff7789}
-.empty{text-align:center;color:var(--muted);padding:28px}
-.note{color:var(--muted);font-size:12px;margin-top:12px}
-@media(max-width:560px){main{padding:14px 10px}.panel{padding:13px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:18px}th,td{padding:9px}}
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10233a;--line:#1d3855;--text:#edf6ff;--muted:#8ea7c2;--cyan:#00d9ff;--blue:#287bff;--green:#24d18a;--red:#ff6378}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102b49 0%,var(--bg) 55%);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:18px clamp(16px,4vw,52px);border-bottom:1px solid #19314b;background:#07111fe8;position:sticky;top:0;z-index:3;backdrop-filter:blur(12px)}
+.logo{width:54px;height:54px;object-fit:cover;border-radius:50%;border:1px solid #00d9ff66}.brand{font-size:clamp(17px,2.5vw,24px);font-weight:800;letter-spacing:-.5px}.brand span{color:var(--cyan)}.sub{color:var(--muted);font-size:12px;letter-spacing:1.5px}
+main{max-width:1250px;margin:auto;padding:28px 18px 60px}.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px;flex-wrap:wrap}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}h1{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:8px 0}.muted{color:var(--muted)}.status{border:1px solid #23654e;background:#0b2b26;color:#7df0bd;border-radius:999px;padding:8px 12px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}.stat,.card{background:linear-gradient(145deg,#10233a,#0b1829);border:1px solid var(--line);border-radius:16px}.stat{padding:17px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:25px;margin-top:5px}.card{padding:20px;margin-top:16px}.card h2{font-size:18px;margin:0 0 5px}.cardhead{display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap;margin-bottom:16px}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.field select,.field input{width:100%;background:#071523;border:1px solid #2a4968;color:var(--text);border-radius:9px;padding:11px;font:inherit;min-width:0}
+.checks{display:flex;gap:14px;flex-wrap:wrap;margin:15px 0}.checks label{display:flex;align-items:center;gap:7px;color:#c6d6e7;font-size:13px}
+button{border:0;border-radius:10px;padding:12px 17px;background:linear-gradient(100deg,#00b9e9,#287bff);color:white;font-weight:800;cursor:pointer}button.secondary{background:#172c43;border:1px solid #2a4968}button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.hint{font-size:12px;color:var(--muted);margin-top:10px}
+.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:12px 13px;border-bottom:1px solid #1b3148}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}td{font-size:13px}.coin{font-weight:800}.pill{border-radius:6px;padding:4px 7px;font-size:11px;font-weight:800}.up{color:var(--green);background:#10362f}.down{color:var(--red);background:#3a202b}.neutral{color:#b7c9dd;background:#1a2c40}.empty{text-align:center;padding:28px;color:var(--muted)}.footer{font-size:12px;color:var(--muted);margin-top:20px}.note{border-left:3px solid var(--cyan);padding:10px 13px;background:#0c2032;color:#b9cee3;border-radius:0 8px 8px 0;font-size:13px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.tabbtn{background:#172c43;border:1px solid #2a4968}.tabbtn.active{background:linear-gradient(100deg,#00b9e9,#287bff);border-color:transparent}.tabpane[hidden]{display:none}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.customrow{display:grid;grid-template-columns:1fr 2fr auto;gap:10px;align-items:end;margin:10px 0}.custom-list{display:grid;gap:8px}.custom-item{border:1px solid var(--line);background:#0a192a;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}@media(max-width:650px){.customrow{grid-template-columns:1fr}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){header{padding:12px}.logo{width:44px;height:44px}.controls{grid-template-columns:1fr 1fr}.card{padding:14px}.grid{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Physical to <span>Digital World</span></h1>
-  <p>Simple Binance USDT Spot Scanner</p>
+  <img class="logo" src="logo.png" alt="Physical to Digital World logo" onerror="this.style.display='none'">
+  <div><div class="brand">Physical to <span>Digital World</span></div><div class="sub">CRYPTO INDICATOR SCANNER</div></div>
 </header>
 <main>
-  <section class="panel">
-    <div class="topline">
-      <div>
-        <h2>Crypto Scanner</h2>
-        <div class="muted">Scan Binance USDT Spot markets. Indicator rules will be added in the next step.</div>
-      </div>
-      <button id="scanBtn" type="button">Scan all USDT coins</button>
+  <section class="hero">
+    <div><div class="eyebrow">Your market workspace</div><h1>Scan smarter. Find your setup.</h1><div class="muted">Choose indicators by name. A coin appears only when every selected indicator confirms a BUY setup.</div></div>
+    <div class="status" id="status">● Ready to scan</div>
+  </section>
+  <div class="tabs" role="tablist" aria-label="Website sections">
+    <button class="tabbtn active" id="tabScan" onclick="showTab('scanPane',this)">Scanner</button>
+    <button class="tabbtn" id="tabMine" onclick="showTab('myPane',this)">My Indicators</button>
+  </div>
+  <section id="myPane" class="tabpane" hidden>
+    <section class="card">
+      <div class="cardhead"><div><h2>My Indicators</h2><div class="muted">Create your own indicator by writing a BUY formula. Your saved indicators stay in this browser.</div></div><span class="pill neutral">Custom formulas</span></div>
+      <div class="field" style="margin-bottom:12px"><label for="customName">Indicator name</label><input id="customName" placeholder="e.g. My RSI Setup" maxlength="40"></div>
+      <div class="field"><label for="customFormula">BUY formula</label><input id="customFormula" class="formula" placeholder="rsi > 50 && rsi > rsiPrev" maxlength="240"></div>
+      <div class="hint">Formula must return true/false. Supported variables: close, open, high, low, volume, rsi, ema9, ema21, macd, signal, vwap, sma20 and their previous-candle versions ending in Prev. Operators: &gt; &lt; &gt;= &lt;= == != && || + - * / ( ).</div>
+      <div class="note" style="margin-top:12px"><b>Example formulas</b><br><code>rsi &gt; 50 &amp;&amp; rsi &gt; rsiPrev</code><br><code>ema9 &gt; ema21</code><br><code>close &gt; sma20 &amp;&amp; volume &gt; volumePrev</code></div>
+      <div class="actions" style="margin-top:14px"><button onclick="saveCustomIndicator()">Save indicator</button><button class="secondary" onclick="fillExample()">Load example</button></div>
+      <div id="customMessage" class="hint" aria-live="polite"></div>
+    </section>
+    <section class="card"><div class="cardhead"><div><h2>Saved indicators</h2><div class="muted">Select one indicator in the Scanner tab when you are ready.</div></div></div><div id="customList" class="custom-list"><div class="empty">No custom indicators saved yet.</div></div></section>
+  </section>
+  <div id="scanPane" class="tabpane">
+  <div class="grid">
+    <div class="stat"><small>Coins checked</small><strong id="checked">—</strong></div>
+    <div class="stat"><small>Confirmed BUY entries</small><strong id="matches">—</strong></div>
+    <div class="stat"><small>Market</small><strong style="font-size:19px">Binance Spot</strong></div>
+    <div class="stat"><small>Data source</small><strong style="font-size:19px">Public API</strong></div>
+  </div>
+  <section class="card">
+    <div class="cardhead"><div><h2>Scanner settings</h2><div class="muted">Choose your conditions, then run the scan.</div></div><span class="pill neutral">No account / API key needed</span></div>
+    <div class="controls">
+      <div class="field"><label for="tf">Timeframe</label><select id="tf" disabled><option value="1h" selected>1 hour (fixed)</option></select></div>
+      <div class="field"><label for="limit">Coins to scan</label><select id="limit"><option value="all" selected>All USDT Spot pairs</option><option value="50">Top 50 by quote volume</option><option value="100">Top 100 by quote volume</option><option value="200">Top 200 by quote volume</option></select></div>
     </div>
-    <div id="status" class="status">Ready. Press “Scan all USDT coins” to load market data.</div>
+    <div style="margin-top:18px"><h2 style="font-size:16px;margin:0 0 5px">Choose one indicator</h2><div class="muted" style="font-size:13px">Only the selected indicator's BUY formula will be used for this scan.</div></div>
+    <div class="controls" style="margin-top:12px"><div class="field" style="grid-column:1/-1"><label for="activeIndicator">Indicator</label><select id="activeIndicator">
+      <option value="alphasniper">Alpha Sniper by Aahad — EXACT / READY</option><option value="rsi">RSI (14) — above 50 and rising</option><option value="ema">EMA Trend — EMA 9 above EMA 21</option><option value="macd">MACD — MACD above signal</option><option value="supertrend" selected>Supertrend — New Buy Signal (Trend Flip)</option><option value="bb">Bollinger Bands — price crosses above middle band</option><option value="stoch">Stochastic RSI — bullish cross from oversold</option><option value="vwap">VWAP — price above VWAP</option><option value="volume">Volume — above previous 20-candle average</option>
+    </select></div></div>
+    <div class="actions"><button id="scanBtn" onclick="scan()">▶ Scan coins</button><button class="secondary" onclick="clearFilters()">Reset filters</button><span class="muted" id="updated" style="font-size:12px"></span></div>
+    <div class="hint">Supertrend matches your supplied TradingView Pine v4 settings: ATR 10, multiplier 3, HL2 source, and Wilder ATR. It shows a coin if a BUY trend-flip occurred on any of the last 3 fully closed 1-hour candles.</div>
   </section>
-
-  <section class="stats">
-    <div class="stat"><small>USDT spot pairs found</small><strong id="total">—</strong></div>
-    <div class="stat"><small>Coins displayed</small><strong id="shown">—</strong></div>
-    <div class="stat"><small>Last scan</small><strong id="lastScan" style="font-size:16px">—</strong></div>
+  <section class="card">
+    <div class="cardhead"><div><h2>Scan results</h2><div class="muted" id="resultText">Run a scan to see matching coins.</div></div><button class="secondary" onclick="downloadCSV()">Export CSV</button></div>
+    <div class="tablewrap"><table><thead><tr><th>Coin</th><th>BUY entry (USDT)</th><th>24h change</th><th>RSI 14</th><th>EMA 9 / 21</th><th>BUY confirmations</th><th>Volume</th><th>Signal</th></tr></thead><tbody id="results"><tr><td colspan="8" class="empty">No scan results yet. Click “Scan coins”.</td></tr></tbody></table></div>
+    <div class="footer">RSI is calculated from closed candles. Prices and volume come from public market data. Results are educational filters, not guaranteed trading signals.</div>
   </section>
-
-  <section class="panel">
-    <h2>Market results</h2>
-    <div class="muted">This first version shows market data only. No BUY signal is generated until we add your indicators.</div>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>#</th><th>Coin pair</th><th>Price (USDT)</th><th>24h change</th><th>24h quote volume</th></tr></thead>
-        <tbody id="results"><tr><td colspan="5" class="empty">No data yet. Start a scan.</td></tr></tbody>
-      </table>
-    </div>
-    <div class="note">Uses Binance public market endpoints; no API key or account connection is required. If Binance is blocked on your network, the scan may fail to load.</div>
+  <section class="card">
+    <h2>How to use</h2>
+    <p class="muted">1. Choose a timeframe. 2. Select the indicator. 3. Click <b>Scan coins</b>. A coin appears as BUY only when the selected indicator confirms a fresh entry.</p>
   </section>
+  </div>
 </main>
 <script>
-const API='https://api.binance.com';
-const $=id=>document.getElementById(id);
-function priceFmt(n){
-  if(!Number.isFinite(n)) return '—';
-  if(n>=1000) return n.toLocaleString(undefined,{maximumFractionDigits:2});
-  if(n>=1) return n.toFixed(4);
-  return n.toPrecision(6);
-}
-function volFmt(n){
-  if(!Number.isFinite(n)) return '—';
-  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
-  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
-  if(n>=1e3) return (n/1e3).toFixed(2)+'K';
-  return n.toFixed(2);
-}
-async function getJSON(url){
-  const response=await fetch(url);
-  if(!response.ok) throw new Error('Binance request failed ('+response.status+'). Please try again.');
-  return response.json();
-}
-async function scan(){
-  const btn=$('scanBtn');
-  btn.disabled=true;
-  $('status').textContent='Loading Binance market list…';
-  $('results').innerHTML='<tr><td colspan="5" class="empty">Loading market data…</td></tr>';
-  try{
-    const [tickers,exchange]=await Promise.all([
-      getJSON(API+'/api/v3/ticker/24hr'),
-      getJSON(API+'/api/v3/exchangeInfo')
-    ]);
-    const allowed=new Set(exchange.symbols
-      .filter(s=>s.status==='TRADING'&&s.quoteAsset==='USDT'&&s.isSpotTradingAllowed)
-      .map(s=>s.symbol));
-    const rows=tickers
-      .filter(t=>allowed.has(t.symbol)&&!/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol))
-      .map(t=>({symbol:t.symbol,price:Number(t.lastPrice),change:Number(t.priceChangePercent),volume:Number(t.quoteVolume)}))
-      .sort((a,b)=>b.volume-a.volume);
-    $('total').textContent=rows.length;
-    $('shown').textContent=rows.length;
-    $('lastScan').textContent=new Date().toLocaleTimeString();
-    if(!rows.length){
-      $('results').innerHTML='<tr><td colspan="5" class="empty">No USDT spot pairs were returned.</td></tr>';
-    }else{
-      $('results').innerHTML=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td class="coin">'+r.symbol+'</td><td>'+priceFmt(r.price)+'</td><td class="'+(r.change>=0?'up':'down')+'">'+(r.change>=0?'+':'')+r.change.toFixed(2)+'%</td><td>'+volFmt(r.volume)+'</td></tr>').join('');
+const API='https://api.binance.com';let lastRows=[];const $=id=>document.getElementById(id);
+const BUILTIN_NAMES={alphasniper:'Alpha Sniper by Aahad (core rules)',rsi:'RSI (14)',ema:'EMA Trend (9/21)',macd:'MACD',supertrend:'Supertrend (New Buy Signal)',bb:'Bollinger Bands',stoch:'Stochastic RSI',vwap:'VWAP',volume:'Volume'};
+function getCustomIndicators(){try{return JSON.parse(localStorage.getItem('pdw_custom_indicators')||'[]')}catch(e){return []}}
+function showTab(id,btn){document.querySelectorAll('.tabpane').forEach(x=>x.hidden=x.id!==id);document.querySelectorAll('.tabbtn').forEach(x=>x.classList.toggle('active',x===btn));}
+function fillExample(){$('customName').value='My RSI Setup';$('customFormula').value='rsi > 50 && rsi > rsiPrev';}
+function saveCustomIndicator(){const name=$('customName').value.trim(),formula=$('customFormula').value.trim();if(!name||!formula){$('customMessage').textContent='Please enter both a name and a formula.';return}try{const test=evalFormula(formula,{rsi:55,rsiPrev:48,close:10,open:9,high:11,low:8,volume:100,ema9:10,ema21:9,macd:1,signal:0,vwap:9,sma20:9,closePrev:9,openPrev:9,highPrev:10,lowPrev:8,volumePrev:90,ema9Prev:9,ema21Prev:9,macdPrev:0,signalPrev:0,vwapPrev:9,sma20Prev:9});if(typeof test!=='boolean')throw new Error('Formula must end in a comparison such as rsi > 50.');const all=getCustomIndicators();const item={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name,formula};all.push(item);localStorage.setItem('pdw_custom_indicators',JSON.stringify(all));$('customName').value='';$('customFormula').value='';$('customMessage').textContent='Indicator saved in this browser.';renderCustomIndicators();renderIndicatorOptions();}catch(e){$('customMessage').textContent='Formula error: '+e.message}}
+function deleteCustomIndicator(id){const all=getCustomIndicators().filter(x=>x.id!==id);localStorage.setItem('pdw_custom_indicators',JSON.stringify(all));renderCustomIndicators();renderIndicatorOptions()}
+function renderCustomIndicators(){const all=getCustomIndicators();$('customList').innerHTML=all.length?all.map(x=>`<div class="custom-item"><div><b>${escapeHTML(x.name)}</b><div class="hint formula">${escapeHTML(x.formula)}</div></div><button class="secondary" onclick="deleteCustomIndicator('${x.id}')">Delete</button></div>`).join(''):'<div class="empty">No custom indicators saved yet.</div>'}
+function renderIndicatorOptions(){const sel=$('activeIndicator'),keep=sel.value;sel.innerHTML=Object.entries(BUILTIN_NAMES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')+'<optgroup label="My Indicators">'+getCustomIndicators().map(x=>`<option value="custom:${x.id}">${escapeHTML(x.name)}</option>`).join('')+'</optgroup>';if([...sel.options].some(o=>o.value===keep))sel.value=keep}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;n'}[c]))}
+function evalFormula(source,vars){const tokens=source.match(/\s*(>=|<=|==|!=|&&|\|\||[()+*/%<>-]|\d+(?:\.\d+)?|[A-Za-z][A-Za-z0-9]*)/g)||[];const clean=tokens.join('').replace(/\s/g,'');if(clean!==source.replace(/\s/g,''))throw new Error('Unsupported character or variable in formula.');let i=0;const peek=()=>tokens[i]?.trim();const take=()=>tokens[i++]?.trim();function primary(){const t=take();if(t==='('){const v=or();if(take()!==')')throw new Error('Missing closing parenthesis.');return v}if(t==='-')return -Number(primary());if(/^\d/.test(t||''))return Number(t);if(t in vars)return vars[t];throw new Error('Unknown variable: '+t)}function mul(){let v=primary();while(['*','/','%'].includes(peek())){const op=take(),b=Number(primary());v=op==='*'?Number(v)*b:op==='/'?Number(v)/b:Number(v)%b}return v}function add(){let v=mul();while(['+','-'].includes(peek())){const op=take(),b=Number(mul());v=op==='+'?Number(v)+b:Number(v)-b}return v}function compare(){let v=add();while(['>','<','>=','<=','==','!='].includes(peek())){const op=take(),b=add();v=op==='>'?v>b:op==='<'?v<b:op==='>='?v>=b:op==='<='?v<=b:op==='=='?v===b:v!==b}return v}function and(){let v=compare();while(peek()==='&&'){take();const b=compare();v=Boolean(v)&&Boolean(b)}return v}function or(){let v=and();while(peek()==='||'){take();const b=and();v=Boolean(v)||Boolean(b)}return v}if(!tokens.length)throw new Error('Formula is empty.');const result=or();if(i!==tokens.length)throw new Error('Could not read the whole formula.');return result}
+
+function fmtPrice(n){if(!Number.isFinite(n))return '—';return n>=1000?n.toLocaleString(undefined,{maximumFractionDigits:2}):n>=1?n.toFixed(4):n.toPrecision(5)}
+function fmtVol(n){if(!Number.isFinite(n))return '—';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(2)+'K';return n.toFixed(2)}
+function sma(a,n){if(a.length<n)return NaN;return a.slice(-n).reduce((x,y)=>x+y,0)/n}
+function emaSeries(a,n){let out=Array(a.length).fill(NaN);if(a.length<n)return out;let e=a.slice(0,n).reduce((x,y)=>x+y,0)/n;out[n-1]=e;let k=2/(n+1);for(let i=n;i<a.length;i++){e=a[i]*k+e*(1-k);out[i]=e}return out}
+function rsiSeries(a,n=14){let out=Array(a.length).fill(NaN);if(a.length<=n)return out;let g=0,l=0;for(let i=1;i<=n;i++){let d=a[i]-a[i-1];g+=Math.max(d,0);l+=Math.max(-d,0)}g/=n;l/=n;out[n]=l===0?100:100-100/(1+g/l);for(let i=n+1;i<a.length;i++){let d=a[i]-a[i-1];g=(g*(n-1)+Math.max(d,0))/n;l=(l*(n-1)+Math.max(-d,0))/n;out[i]=l===0?100:100-100/(1+g/l)}return out}
+function macdSeries(a){let e12=emaSeries(a,12),e26=emaSeries(a,26),m=a.map((_,i)=>Number.isFinite(e12[i])&&Number.isFinite(e26[i])?e12[i]-e26[i]:NaN);let valid=m.findIndex(Number.isFinite), sig=Array(a.length).fill(NaN);if(valid>=0){let sm=emaSeries(m.slice(valid),9);sm.forEach((v,i)=>sig[valid+i]=v)}return {m,sig}}
+function stochRsi(r,n=14){let k=Array(r.length).fill(NaN);for(let i=n;i<r.length;i++){let win=r.slice(i-n+1,i+1);if(win.some(x=>!Number.isFinite(x)))continue;let lo=Math.min(...win),hi=Math.max(...win);k[i]=hi===lo?50:(r[i]-lo)/(hi-lo)*100}return k}
+
+function supertrend(candles,period=10,mult=3){
+    // Pine v4 equivalent: HL2 source, ATR(10) with Wilder RMA, multiplier 3.
+    const n=candles.length,tr=Array(n).fill(NaN),atr=Array(n).fill(NaN);
+    const up=Array(n).fill(NaN),dn=Array(n).fill(NaN),trend=Array(n).fill(1);
+    for(let i=0;i<n;i++){
+        const h=+candles[i][2],l=+candles[i][3],c=+candles[i][4];
+        const pc=i?+candles[i-1][4]:c;
+        tr[i]=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc));
+        if(i===period-1)atr[i]=sma(tr.slice(0,period),period);
+        else if(i>=period)atr[i]=(atr[i-1]*(period-1)+tr[i])/period;
+        if(!Number.isFinite(atr[i]))continue;
+        const src=(h+l)/2,rawUp=src-mult*atr[i],rawDn=src+mult*atr[i];
+        const up1=i>0&&Number.isFinite(up[i-1])?up[i-1]:rawUp;
+        const dn1=i>0&&Number.isFinite(dn[i-1])?dn[i-1]:rawDn;
+        up[i]=i>0&&(+candles[i-1][4])>up1?Math.max(rawUp,up1):rawUp;
+        dn[i]=i>0&&(+candles[i-1][4])<dn1?Math.min(rawDn,dn1):rawDn;
+        const previousTrend=i?trend[i-1]:1;
+        trend[i]=previousTrend===-1&&c>dn1?1:
+                 previousTrend===1&&c<up1?-1:previousTrend;
     }
-    $('status').textContent='Scan complete — loaded '+rows.length+' Binance USDT Spot pairs, sorted by 24h quote volume.';
-  }catch(error){
-    $('total').textContent='—';$('shown').textContent='—';
-    $('results').innerHTML='<tr><td colspan="5" class="empty">'+error.message+'</td></tr>';
-    $('status').textContent='Scan failed. Check your internet connection or try again later.';
-  }finally{btn.disabled=false;}
+    return {trend,up,dn,atr};
 }
-$('scanBtn').addEventListener('click',scan);
+
+async function getJSON(url){const r=await fetch(url);if(!r.ok)throw new Error('Binance API request failed ('+r.status+'). Try again or check network access.');return r.json()}
+async function scan(){const selected=$('activeIndicator').value;if(selected.startsWith('custom:')&&!getCustomIndicators().some(x=>x.id===selected.slice(7))){alert('Please save/select a custom indicator first.');return}const btn=$('scanBtn');btn.disabled=true;$('status').textContent='● Scanning…';$('resultText').textContent='Loading market data…';$('results').innerHTML='<tr><td colspan="8" class="empty">Scanning market data, please wait…</td></tr>';try{const [tickers,exchange]=await Promise.all([getJSON(API+'/api/v3/ticker/24hr'),getJSON(API+'/api/v3/exchangeInfo')]);const valid=new Set(exchange.symbols.filter(s=>s.status==='TRADING'&&s.quoteAsset==='USDT'&&s.isSpotTradingAllowed).map(s=>s.symbol));const limitValue=$('limit').value;const sortedPairs=tickers.filter(t=>valid.has(t.symbol)&&!/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol)).sort((a,b)=>Number(b.quoteVolume)-Number(a.quoteVolume));const pairs=limitValue==='all'?sortedPairs:sortedPairs.slice(0,Number(limitValue));const tf=$('tf').value;let rows=[],done=0;for(let i=0;i<pairs.length;i+=8){const batch=pairs.slice(i,i+8);const results=await Promise.allSettled(batch.map(async t=>{const k=await getJSON(API+'/api/v3/klines?symbol='+t.symbol+'&interval='+tf+'&limit=100');const candles=k.slice(0,-1);if(candles.length<40)return null;const closes=candles.map(x=>+x[4]),opens=candles.map(x=>+x[1]),highs=candles.map(x=>+x[2]),lows=candles.map(x=>+x[3]),vols=candles.map(x=>+x[5]),last=candles.length-1,prev=last-1,price=closes[last],change=Number(t.priceChangePercent);const rsi=rsiSeries(closes,14),e9=emaSeries(closes,9),e21=emaSeries(closes,21),macd=macdSeries(closes),stoch=stochRsi(rsi,14),st=supertrend(candles);const typical=candles.map((c,i)=>(highs[i]+lows[i]+closes[i])/3*vols[i]),vwap=typical.reduce((a,b)=>a+b,0)/(vols.reduce((a,b)=>a+b,0)||1);const mid=sma(closes,20),bbMidPrev=sma(closes.slice(0,-1),20);const avgVol=sma(vols.slice(0,-1),20);const stochK=sma(stoch.slice(-3),3),stochKPrev=sma(stoch.slice(-4,-1),3);
+const buySignal=[last,last-1,last-2].some(i=>i>0&&st.trend[i]===1&&st.trend[i-1]===-1);
+const checks={rsi:Number.isFinite(rsi[last])&&rsi[last]>50&&rsi[last]>rsi[prev],ema:Number.isFinite(e9[last])&&Number.isFinite(e21[last])&&e9[last]>e21[last],macd:Number.isFinite(macd.m[last])&&Number.isFinite(macd.sig[last])&&macd.m[last]>macd.sig[last],supertrend:buySignal,bb:price>mid&&closes[prev]<=bbMidPrev,stoch:Number.isFinite(stochK)&&Number.isFinite(stochKPrev)&&stochK>stochKPrev&&stochK<30&&stochKPrev<30,vwap:price>vwap,volume:vols[last]>avgVol};const e33=emaSeries(closes,33),e50=emaSeries(closes,50);const vars={close:price,open:opens[last],high:highs[last],low:lows[last],volume:vols[last],rsi:rsi[last],ema9:e9[last],ema21:e21[last],macd:macd.m[last],signal:macd.sig[last],vwap,sma20:mid,closePrev:closes[prev],openPrev:opens[prev],highPrev:highs[prev],lowPrev:lows[prev],volumePrev:vols[prev],rsiPrev:rsi[prev],ema9Prev:e9[prev],ema21Prev:e21[prev],macdPrev:macd.m[prev],signalPrev:macd.sig[prev],vwapPrev:vwap,sma20Prev:bbMidPrev};let passed=false,indicatorLabel='';if(selected==='alphasniper'){const is15or60=tf==='15m'||tf==='1h';const uptrend=(()=>{let pivH=[],pivL=[];for(let j=Math.max(3,last-80);j<=last-3;j++){if(highs[j]>highs[j-1]&&highs[j]>highs[j-2]&&highs[j]>highs[j-3]&&highs[j]>highs[j+1]&&highs[j]>highs[j+2]&&highs[j]>highs[j+3])pivH.push(highs[j]);if(lows[j]<lows[j-1]&&lows[j]<lows[j-2]&&lows[j]<lows[j-3]&&lows[j]<lows[j+1]&&lows[j]<lows[j+2]&&lows[j]<lows[j+3])pivL.push(lows[j]);}return pivH.length>=2&&pivL.length>=2&&pivH.at(-1)>pivH.at(-2)&&pivL.at(-1)>pivL.at(-2)})();const crossUp=e9[last]>e33[last]&&e9[prev]<=e33[prev];const touch=e9[last]>e33[last]&&opens[last]>e9[last]&&lows[last]<=e9[last]&&closes[last]>e9[last]&&closes[last]>opens[last]&&!crossUp;const exact=is15or60&&uptrend&&e9[last]>e33[last]&&closes[last]>e50[last]&&touch;const dist=e9[last]>0?(lows[last]-e9[last])/e9[last]*100:Infinity;const ready=is15or60&&uptrend&&!touch&&!crossUp&&e9[last]>e33[last]&&opens[last]>e9[last]&&closes[last]>e9[last]&&closes[last]>e50[last]&&lows[last]>e9[last]&&dist>=0&&dist<=0.35;passed=exact||ready;indicatorLabel=exact?'Alpha Sniper EXACT (core rules)':ready?'Alpha Sniper READY (core rules)':'Alpha Sniper';if(!passed)return null;}else if(selected.startsWith('custom:')){const custom=getCustomIndicators().find(x=>x.id===selected.slice(7));if(!custom)return null;try{passed=evalFormula(custom.formula,vars)===true}catch(e){throw new Error('Formula for '+custom.name+' is invalid: '+e.message)}indicatorLabel=custom.name}else{passed=!!checks[selected];indicatorLabel=BUILTIN_NAMES[selected]||selected}if(!passed)return null;return {symbol:t.symbol,price:price,change,rsi:rsi[last],ema9:e9[last],ema21:e21[last],volume:vols[last],quoteVol:Number(t.quoteVolume),confirmations:indicatorLabel,signal:'BUY'}}));for(const x of results)if(x.status==='fulfilled'&&x.value)rows.push(x.value);done+=batch.length;$('status').textContent='● Scanning '+done+'/'+pairs.length}rows.sort((a,b)=>b.quoteVol-a.quoteVol);lastRows=rows;$('checked').textContent=pairs.length;$('matches').textContent=rows.length;$('updated').textContent='Updated '+new Date().toLocaleTimeString();$('resultText').textContent='Found '+rows.length+' BUY entries using '+(selected.startsWith('custom:')?(getCustomIndicators().find(x=>x.id===selected.slice(7))||{name:'custom indicator'}).name:(BUILTIN_NAMES[selected]||selected))+'.';if(!rows.length){$('results').innerHTML='<tr><td colspan="8" class="empty">No coins met ALL selected indicator rules on the latest closed candle. This is normal; try a different timeframe or fewer indicators.</td></tr>'}else $('results').innerHTML=rows.map(r=>`<tr><td class="coin"><a style="color:var(--cyan);text-decoration:none" target="_blank" rel="noopener" href="https://www.tradingview.com/chart/?symbol=BINANCE%3A${encodeURIComponent(r.symbol)}">${r.symbol.replace('USDT','')}</a><span class="muted"> / USDT</span></td><td>${fmtPrice(r.price)}</td><td><span class="pill ${r.change>=0?'up':'down'}">${r.change>=0?'+':''}${r.change.toFixed(2)}%</span></td><td>${r.rsi.toFixed(2)}</td><td>${fmtPrice(r.ema9)} / ${fmtPrice(r.ema21)}</td><td>${r.confirmations}</td><td>${fmtVol(r.volume)}</td><td><span class="pill up">BUY</span></td></tr>`).join('');$('status').textContent='● Scan complete'}catch(e){$('status').textContent='● Scan failed';$('resultText').textContent=e.message;$('results').innerHTML='<tr><td colspan="8" class="empty">'+e.message+'</td></tr>'}finally{btn.disabled=false}}
+function clearFilters(){$('tf').value='1h';$('limit').value='all';$('activeIndicator').value='supertrend'}
+function downloadCSV(){if(!lastRows.length){alert('Run a scan first.');return}const cols=['symbol','price','change','rsi','ema9','ema21','confirmations','volume','signal','quoteVol'];const csv=[cols.join(','),...lastRows.map(r=>cols.map(c=>'"'+String(r[c]??'').replaceAll('"','""')+'"').join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='physical-to-digital-world-buy-signals.csv';a.click();URL.revokeObjectURL(a.href)}
+renderCustomIndicators();renderIndicatorOptions();
 </script>
 </body>
 </html>
