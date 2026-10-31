@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical to Digital World — W%R 1H Scanner</title>
+<style>
+:root{--bg:#0b1220;--panel:#111c2e;--panel2:#17243a;--text:#e8eef8;--muted:#9aabc2;--green:#18c784;--red:#ff647c;--yellow:#ffd166;--line:#263750;--blue:#62a8ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Arial,sans-serif}
+header{padding:24px 18px 18px;background:linear-gradient(120deg,#10243a,#132b3d);border-bottom:1px solid var(--line)}
+.wrap{max-width:1200px;margin:auto;padding:0 16px}
+h1{font-size:clamp(22px,4vw,32px);margin:0 0 5px}
+.sub{color:var(--muted);margin:0}
+main{max-width:1200px;margin:20px auto;padding:0 16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.field{display:flex;flex-direction:column;gap:5px;min-width:130px}
+label{font-size:12px;color:var(--muted)}
+select,input{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px;font-size:14px}
+button{border:0;border-radius:9px;padding:11px 17px;font-weight:bold;cursor:pointer}
+#scanBtn{background:var(--green);color:#062417}
+#stopBtn{background:#293951;color:var(--text)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.status{margin-top:12px;color:var(--muted);font-size:13px;min-height:20px}
+.progress{height:7px;background:#223149;border-radius:9px;overflow:hidden;margin-top:8px}
+#bar{height:100%;width:0;background:var(--green);transition:width .2s}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{background:var(--panel2);padding:13px;border-radius:10px}
+.stat b{display:block;font-size:23px}
+.stat span{font-size:12px;color:var(--muted)}
+h2{font-size:18px;margin:0 0 12px}
+.note{color:var(--muted);font-size:13px}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td{font-size:14px}
+.buy{color:var(--green);font-weight:bold}
+.empty{text-align:center;color:var(--muted);padding:28px}
+.small{font-size:12px;color:var(--muted)}
+footer{max-width:1200px;margin:0 auto;padding:0 16px 28px;color:var(--muted);font-size:12px}
+@media(max-width:650px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.controls .field{flex:1 1 42%}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Physical to Digital World</h1>
+<p class="sub">Binance Spot · Williams %R · 1 Hour BUY Scanner</p>
+</div></header>
+<main>
+<section class="panel">
+<h2>Scanner Settings</h2>
+<div class="controls">
+ <div class="field"><label for="universe">Coins to scan (highest 24h volume)</label>
+ <select id="universe"><option value="50">Top 50</option><option value="100" selected>Top 100</option><option value="200">Top 200</option><option value="300">Top 300</option><option value="500">Top 500</option></select></div>
+ <div class="field"><label for="refresh">Auto scan</label>
+ <select id="refresh"><option value="0">Off</option><option value="5" selected>Every 5 minutes</option><option value="15">Every 15 minutes</option><option value="60">Every 1 hour</option></select></div>
+ <button id="scanBtn">SCAN NOW</button><button id="stopBtn" disabled>STOP</button>
+</div>
+<div class="status" id="status">Ready. Press SCAN NOW to begin.</div>
+<div class="progress"><div id="bar"></div></div>
+<p class="small">Indicator settings: Length 14 · Smoothing 3 · Source Close · BUY level -80 · Timeframe 1H</p>
+</section>
+
+<section class="panel">
+<div class="stats">
+ <div class="stat"><b id="signals">0</b><span>BUY signals found</span></div>
+ <div class="stat"><b id="scanned">0</b><span>Coins scanned</span></div>
+ <div class="stat"><b id="universeCount">—</b><span>Coins selected</span></div>
+ <div class="stat"><b id="lastScan">—</b><span>Last scan (local time)</span></div>
+</div>
+</section>
+
+<section class="panel">
+<h2>Latest 1H BUY Signals</h2>
+<p class="note">A signal appears only when the smoothed Williams %R crosses upward through -80 on a fully closed 1-hour candle.</p>
+<div class="tablewrap">
+<table><thead><tr><th>#</th><th>Coin</th><th>Last Price</th><th>W%R at Cross</th><th>Signal Candle (UTC)</th><th>Status</th></tr></thead>
+<tbody id="results"><tr><td colspan="6" class="empty">No scan yet.</td></tr></tbody></table>
+</div>
+</section>
+<section class="panel">
+<h2>BUY Rule</h2>
+<p>BUY = previous closed candle's Smoothed W%R is at or below -80, and the latest closed candle's Smoothed W%R is above -80.</p>
+<p class="note">The scanner uses Binance public market data. It does not place trades. A signal is a technical condition, not a guarantee of price increase.</p>
+</section>
+</main>
+<footer>Use at your own risk. This page requires an internet connection and may be affected by exchange API limits or availability. Only Binance Spot USDT pairs are considered; leveraged tokens are excluded where identifiable.</footer>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const API = "https://api.binance.com";
+ const length = 14, smoothing = 3, level = -80;
+ let stopped = false, running = false, timer = null;
+ const excluded = /(UP|DOWN|BULL|BEAR)[0-9]*USDT$/;
+ const sleep = ms => new Promise(r => setTimeout(r,ms));
+ async function getJSON(url) {
+   const res = await fetch(url);
+   if (!res.ok) throw new Error("Binance API error " + res.status);
+   return res.json();
+ }
+ function wrSeries(candles) {
+   const raw = [];
+   for (let i=0;i<candles.length;i++) {
+     if (i < length-1) { raw.push(null); continue; }
+     let hi=-Infinity, lo=Infinity;
+     for(let j=i-length+1;j<=i;j++){
+       hi=Math.max(hi,Number(candles[j][2]));
+       lo=Math.min(lo,Number(candles[j][3]));
+     }
+     const close=Number(candles[i][4]);
+     raw.push(hi===lo ? null : 100*(close-hi)/(hi-lo));
+   }
+   const sm=[];
+   for(let i=0;i<raw.length;i++){
+     if(i<smoothing-1){sm.push(null);continue;}
+     const part=raw.slice(i-smoothing+1,i+1);
+     sm.push(part.some(v=>v===null) ? null : part.reduce((a,b)=>a+b,0)/smoothing);
+   }
+   return sm;
+ }
+ function fmtPrice(value){
+   const n=Number(value);
+   if(!Number.isFinite(n)) return String(value);
+   return n>=1000?n.toLocaleString(undefined,{maximumFractionDigits:2}):
+     n>=1?n.toFixed(4):n>=0.01?n.toFixed(6):n.toPrecision(5);
+ }
+ function fmtTime(ms){return new Date(ms).toISOString().replace("T"," ").slice(0,16);}
+ async function scan(){
+   if(running) return;
+   running=true; stopped=false;
+   $("scanBtn").disabled=true; $("stopBtn").disabled=false;
+   $("results").innerHTML='<tr><td colspan="6" class="empty">Scanning Binance Spot markets…</td></tr>';
+   $("status").textContent="Loading Binance market list…";
+   $("bar").style.width="0%";
+   try{
+     const [info,tickers]=await Promise.all([
+       getJSON(API+"/api/v3/exchangeInfo"),
+       getJSON(API+"/api/v3/ticker/24hr")
+     ]);
+     const valid=new Set(info.symbols.filter(s=>s.status==="TRADING" && s.isSpotTradingAllowed && s.quoteAsset==="USDT" && !s.symbol.includes("UPUSDT") && !s.symbol.includes("DOWNUSDT") && !s.symbol.includes("BULLUSDT") && !s.symbol.includes("BEARUSDT")).map(s=>s.symbol));
+     const top=tickers.filter(t=>valid.has(t.symbol) && !excluded.test(t.symbol))
+       .sort((a,b)=>Number(b.quoteVolume)-Number(a.quoteVolume))
+       .slice(0,Number($("universe").value));
+     $("universeCount").textContent=top.length;
+     const found=[];
+     let done=0, errors=0;
+     const concurrency=5;
+     async function worker(items){
+       while(items.length && !stopped){
+         const t=items.shift();
+         try{
+           const klines=await getJSON(API+"/api/v3/klines?symbol="+t.symbol+"&interval=1h&limit=40");
+           // Binance's final kline is normally the currently forming candle. Exclude it.
+           const closed=klines.slice(0,-1);
+           const values=wrSeries(closed);
+           const n=values.length;
+           const prev=values[n-2], curr=values[n-1];
+           if(prev!==null && curr!==null && Number.isFinite(prev) && Number.isFinite(curr) && prev<=level && curr>level){
+             found.push({symbol:t.symbol,price:t.lastPrice,wr:curr,time:closed[n-1][0]});
+           }
+         }catch(e){errors++;}
+         done++;
+         $("scanned").textContent=done;
+         $("bar").style.width=(done/top.length*100).toFixed(1)+"%";
+         $("status").textContent=`Scanning ${done} / ${top.length} coins…${errors ? " ("+errors+" API errors)" : ""}`;
+       }
+     }
+     const queues=Array.from({length:concurrency},()=>[]);
+     top.forEach((x,i)=>queues[i%concurrency].push(x));
+     await Promise.all(queues.map(worker));
+     if(stopped){$("status").textContent="Scan stopped by user.";return;}
+     found.sort((a,b)=>b.time-a.time);
+     $("signals").textContent=found.length;
+     $("lastScan").textContent=new Date().toLocaleTimeString();
+     if(found.length){
+       $("results").innerHTML=found.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.symbol.replace("USDT","")}</b>/USDT</td><td>${fmtPrice(x.price)} USDT</td><td class="buy">${x.wr.toFixed(2)}</td><td>${fmtTime(x.time)}</td><td class="buy">BUY</td></tr>`).join("");
+     }else{
+       $("results").innerHTML='<tr><td colspan="6" class="empty">No fresh BUY cross found in the latest closed 1H candle among the selected coins.</td></tr>';
+     }
+     $("status").textContent=`Scan complete. ${done} coins checked; ${found.length} BUY signal(s).${errors ? " Some markets could not be checked due to API errors." : ""}`;
+   }catch(e){
+     $("status").textContent="Could not load Binance data: "+e.message+". Check your internet connection or try again later.";
+     $("results").innerHTML='<tr><td colspan="6" class="empty">Scan failed. Please try again.</td></tr>';
+   }finally{
+     running=false; $("scanBtn").disabled=false; $("stopBtn").disabled=true;
+     if(!stopped && Number($("refresh").value)>0){
+       clearTimeout(timer);
+       timer=setTimeout(scan,Number($("refresh").value)*60000);
+     }
+   }
+ }
+ $("scanBtn").addEventListener("click",()=>{clearTimeout(timer);scan();});
+ $("stopBtn").addEventListener("click",()=>{stopped=true;$("status").textContent="Stopping scan…";});
+ $("refresh").addEventListener("change",()=>{
+   clearTimeout(timer);
+   const mins=Number($("refresh").value);
+   if(mins>0 && !running) timer=setTimeout(scan,mins*60000);
+ });
+})();
+</script>
+</body>
+</html>
